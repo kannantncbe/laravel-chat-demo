@@ -103,6 +103,15 @@ function isoDateOutput(): array
     ];
 }
 
+it('uses the configured Gemini provider and model', function () {
+    config(['ai.providers.gemini.models.text.default' => 'gemini-test-model']);
+
+    $agent = new SearchQueryTranslator($this->actor);
+
+    expect($agent->provider())->toBe('gemini')
+        ->and($agent->model())->toBe('gemini-test-model');
+});
+
 it('maps a faked structured response into a valid SearchQuery', function () {
     SearchQueryTranslator::fake([validTranslatorOutput()])->preventStrayPrompts();
 

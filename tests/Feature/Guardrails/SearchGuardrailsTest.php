@@ -144,7 +144,7 @@ it('records token usage and estimated cost', function () {
             $output,
             json_encode($output),
             new TextUsage(inputTokens: 10000, outputTokens: 2000),
-            new Meta('anthropic', 'claude-sonnet-5'),
+            new Meta('gemini', 'gemini-3.6-flash'),
         ),
     ])->preventStrayPrompts();
 

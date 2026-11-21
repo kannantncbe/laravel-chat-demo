@@ -44,13 +44,13 @@ php artisan demo:reset
 
 ## Environment keys
 
-Set at least one provider key. The translator agent uses **Anthropic** (`claude-sonnet-5`) by default,
-so `ANTHROPIC_API_KEY` is required for live search and live evals.
+Set a provider key. The translator agent uses **Gemini** (`gemini-3.6-flash`) by default,
+so `GEMINI_API_KEY` is required for live search and live evals.
 
 | Key | Purpose |
 |---|---|
-| `ANTHROPIC_API_KEY` | Default translator provider |
-| `OPENAI_API_KEY` | Optional second provider |
+| `GEMINI_API_KEY` | Default translator provider |
+| `GEMINI_MODEL` | Optional Gemini text model override |
 | `AI_SEARCH_MAX_QUESTION_LENGTH` | Reject questions before they reach the model (default `500`) |
 | `AI_SEARCH_RATE_LIMIT_PER_MINUTE` | Per-user search rate limit (default `20`) |
 | `AI_SEARCH_STATEMENT_TIMEOUT_MS` | Query timeout where the driver supports it (default `5000`) |
@@ -100,8 +100,8 @@ php artisan test --parallel
 | Guardrails | `php artisan test --compact tests/Feature/Guardrails` | No |
 | Live eval vs baseline | `php artisan test --compact --group=live` | **Yes** |
 
-`--group=live` is excluded by default in `phpunit.xml`. It requires `ANTHROPIC_API_KEY` or
-`OPENAI_API_KEY` and seeded demo data. Accuracy is compared to `tests/Evals/baseline.json`.
+`--group=live` is excluded by default in `phpunit.xml`. It requires `GEMINI_API_KEY` and seeded demo
+data. Accuracy is compared to `tests/Evals/baseline.json`.
 
 ## Evals
 
@@ -110,7 +110,7 @@ Grade **execution accuracy** (result sets), never generated SQL strings.
 ```bash
 php artisan migrate:fresh --seed
 php artisan eval:search
-php artisan eval:search --model=claude-sonnet-5
+php artisan eval:search --model=gemini-3.6-flash
 php artisan eval:search --runs=3
 php artisan eval:search --filter=temporal
 ```

@@ -2,7 +2,6 @@
 
 namespace App\Evals;
 
-use App\Ai\Agents\SearchQueryTranslator;
 use App\Search\SearchAttempt;
 use App\Search\SearchService;
 use Throwable;
@@ -37,7 +36,7 @@ final class EvalRunner
         }
 
         return new EvalReport(
-            model: $model ?? SearchQueryTranslator::MODEL,
+            model: $model ?? (string) config('ai.providers.gemini.models.text.default', 'gemini-3.6-flash'),
             runsPerCase: $runs,
             cases: $results,
             timestamp: now()->toIso8601String(),

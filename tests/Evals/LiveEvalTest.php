@@ -7,10 +7,10 @@ use Database\Seeders\DemoDataSeeder;
 uses()->group('live');
 
 it('meets the committed accuracy baseline', function () {
-    $hasKey = filled(config('ai.providers.anthropic.key')) || filled(config('ai.providers.openai.key'));
+    $hasKey = filled(config('ai.providers.gemini.key'));
 
     if (! $hasKey) {
-        $this->markTestSkipped('Live evals require ANTHROPIC_API_KEY or OPENAI_API_KEY.');
+        $this->markTestSkipped('Live evals require GEMINI_API_KEY.');
     }
 
     $this->travelTo('2026-08-22 09:00:00');

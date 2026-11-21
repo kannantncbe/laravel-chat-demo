@@ -15,10 +15,6 @@ final class SearchQueryTranslator implements Agent, HasStructuredOutput
 {
     use Promptable;
 
-    public const string PROVIDER = 'openai';
-
-    public const string MODEL = 'gpt-4o';
-
     public function __construct(public User $actor) {}
 
     public function instructions(): string
@@ -43,12 +39,12 @@ PROMPT;
 
     public function provider(): string
     {
-        return self::PROVIDER;
+        return (string) config('ai.default', 'gemini');
     }
 
     public function model(): string
     {
-        return self::MODEL;
+        return (string) config('ai.providers.gemini.models.text.default', 'gemini-3.6-flash');
     }
 
     /**
