@@ -2,21 +2,17 @@
 pipeline {
     agent any
 
+    environment {
+        APP_ENV = 'testing'
+        APP_KEY = 'base64:MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI='
+    }
+
     options {
         timestamps()
         disableConcurrentBuilds()
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                echo 'Checking out Laravel project from GitHub'
-
-                git branch: 'main',
-                    url: 'https://github.com/kannantncbe/laravel-chat-demo.git'
-            }
-        }
-
         stage('Install PHP Dependencies') {
             steps {
                 echo 'Installing Composer dependencies'
@@ -27,23 +23,11 @@ pipeline {
             }
         }
 
-        stage('Laravel Quality Checks and Tests') {
-            steps {
-                echo 'Running Pint, PHPStan and Laravel tests'
-
-                bat '''
-                    call C:\\composer\\composer.bat test
-                '''
-            }
-        }
-
         stage('Install Frontend Dependencies') {
             steps {
                 echo 'Installing Node dependencies'
 
-                bat '''
-                    npm ci
-                '''
+                bat 'npm ci'
             }
         }
 
@@ -51,8 +35,16 @@ pipeline {
             steps {
                 echo 'Building frontend assets'
 
+                bat 'npm run build'
+            }
+        }
+
+        stage('Laravel Quality Checks and Tests') {
+            steps {
+                echo 'Running Pint, PHPStan and Laravel tests'
+
                 bat '''
-                    npm run build
+                    call C:\\composer\\composer.bat test
                 '''
             }
         }
