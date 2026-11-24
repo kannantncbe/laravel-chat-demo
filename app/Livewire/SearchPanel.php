@@ -277,7 +277,7 @@ class SearchPanel extends Component
         $this->confidence = $attempt->confidence;
         $this->outcome = $attempt->outcome->value;
         $this->message = $attempt->message;
-        $this->appliedQuery = ($attempt->result?->appliedQuery ?? $attempt->query)?->toArray();
+        $this->appliedQuery = ($attempt->result->appliedQuery ?? $attempt->query)?->toArray();
         $this->candidates = $attempt->candidates;
         $this->sql = $attempt->result?->sql;
 

@@ -23,7 +23,7 @@ final class SqlFormatter
         $insideBetween = false;
 
         $marked = preg_replace_callback(self::TOKEN_PATTERN, function (array $match) use (&$insideBetween): string {
-            if (filled($match[1] ?? null)) {
+            if (filled($match[1])) {
                 return $match[1];
             }
 

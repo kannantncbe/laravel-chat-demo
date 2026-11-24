@@ -64,14 +64,14 @@ final class SearchResultPresenter
     {
         return [
             'headings' => ['ID', 'Title', 'Status', 'Priority', 'Customer', 'Opened'],
-            'rows' => $result->rows->map(fn (mixed $row): array => [
+            'rows' => self::normalizeRows($result->rows->map(fn (mixed $row): array => [
                 self::display(self::value($row, 'id')),
                 self::display(self::value($row, 'title')),
                 self::display(self::value($row, 'status')),
                 self::display(self::value($row, 'priority')),
                 self::display(self::value($row, 'customer.name')),
                 self::display(self::value($row, 'opened_at')),
-            ])->all(),
+            ])->all()),
         ];
     }
 
@@ -89,7 +89,7 @@ final class SearchResultPresenter
 
         return [
             'headings' => $headings,
-            'rows' => $result->rows->map(function (mixed $row) use ($includeTaxId): array {
+            'rows' => self::normalizeRows($result->rows->map(function (mixed $row) use ($includeTaxId): array {
                 $cells = [
                     self::display(self::value($row, 'id')),
                     self::display(self::value($row, 'name')),
@@ -102,7 +102,7 @@ final class SearchResultPresenter
                 }
 
                 return $cells;
-            })->all(),
+            })->all()),
         ];
     }
 
@@ -113,13 +113,13 @@ final class SearchResultPresenter
     {
         return [
             'headings' => ['ID', 'Customer', 'Total', 'Issued', 'Paid'],
-            'rows' => $result->rows->map(fn (mixed $row): array => [
+            'rows' => self::normalizeRows($result->rows->map(fn (mixed $row): array => [
                 self::display(self::value($row, 'id')),
                 self::display(self::value($row, 'customer.name')),
                 self::moneyFromCents(self::value($row, 'total_cents')),
                 self::display(self::value($row, 'issued_at')),
                 self::display(self::value($row, 'paid_at')),
-            ])->all(),
+            ])->all()),
         ];
     }
 
@@ -139,32 +139,41 @@ final class SearchResultPresenter
         if ($aggregate->groupBy === null) {
             return [
                 'headings' => [$aggregateHeading],
-                'rows' => $result->rows->map(fn (mixed $row): array => [
+                'rows' => self::normalizeRows($result->rows->map(fn (mixed $row): array => [
                     self::display(self::value($row, 'aggregate')),
-                ])->all(),
+                ])->all()),
             ];
         }
 
         return [
             'headings' => [str($aggregate->groupBy)->headline()->toString(), $aggregateHeading],
-            'rows' => $result->rows->map(fn (mixed $row): array => [
+            'rows' => self::normalizeRows($result->rows->map(fn (mixed $row): array => [
                 self::display(self::value($row, $aggregate->groupBy)),
                 self::display(self::value($row, 'aggregate')),
-            ])->all(),
+            ])->all()),
         ];
+    }
+
+    /**
+     * Normalize rows into a sequential list of string lists.
+     *
+     * @param  array<int, array<int, string>>  $rows
+     * @return list<list<string>>
+     */
+    private static function normalizeRows(array $rows): array
+    {
+        $normalized = [];
+
+        foreach ($rows as $row) {
+            $normalized[] = array_values($row);
+        }
+
+        return $normalized;
     }
 
     private static function value(mixed $row, string $key): mixed
     {
-        if ($row instanceof Model) {
-            return data_get($row, $key);
-        }
-
-        if (is_array($row)) {
-            return data_get($row, $key);
-        }
-
-        if (is_object($row)) {
+        if ($row instanceof Model || is_array($row) || is_object($row)) {
             return data_get($row, $key);
         }
 
